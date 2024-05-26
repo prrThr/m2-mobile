@@ -1,5 +1,3 @@
-# m2-mobile
-
 # Trabalho de Implementação – M2
 
 ## Implementação (6,0 pontos):
@@ -30,7 +28,7 @@ Desenvolva um aplicativo que atenda aos requisitos funcionais abaixo.
 **Forma de entrega**: Compacte o diretório src do projeto Android Studio e
 faça o upload no ambiente virtual de aprendizagem da disciplina.
 
-**Apresentação (4,0 pontos)**
+## Apresentação (4,0 pontos)
 - Clareza na apresentação: demonstrar os que todos os requisitos
   solicitados foram implementados e seu funcionamento.
 - Balanceamento entre teoria e prática: apresentar o código fonte e o

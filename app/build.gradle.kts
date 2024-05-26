@@ -1,11 +1,15 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "com.example.m2_mobile"
     compileSdk = 34
+    viewBinding {
+        enable = true
+    }
 
     defaultConfig {
         applicationId = "com.example.m2_mobile"
@@ -42,6 +46,26 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+    // Retrofit and Gson
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+
+    // OkHttp
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+
+    // Room
+    implementation(libs.room.runtime)
+    //noinspection KaptUsageInsteadOfKsp
+    kapt(libs.room.compiler)
+    implementation(libs.room.ktx)
+
+    // Glide
+    implementation(libs.glide)
+    //noinspection KaptUsageInsteadOfKsp
+    kapt(libs.glide.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

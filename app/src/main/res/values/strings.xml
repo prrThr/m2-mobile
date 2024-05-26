@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">M2-Mobile</string>
+    <string name="image_description">Descrição da Imagem</string>
 </resources>
