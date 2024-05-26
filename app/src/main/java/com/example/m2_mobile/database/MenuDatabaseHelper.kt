@@ -15,7 +15,6 @@ class MenuDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         private const val COLUMN_ID = "_id"
         private const val COLUMN_NAME = "name"
         private const val COLUMN_PRICE = "price"
-        private const val COLUMN_IMAGE_PATH = "image_path"
     }
 
 // ------------------------------------------------------------------------------ //
@@ -24,8 +23,7 @@ class MenuDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         val createTableQuery = "CREATE TABLE $TABLE_MENU (" +
                 "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "$COLUMN_NAME TEXT, " +
-                "$COLUMN_PRICE REAL, " +
-                "$COLUMN_IMAGE_PATH TEXT)"
+                "$COLUMN_PRICE REAL)"
         db.execSQL(createTableQuery)
     }
 
@@ -59,9 +57,10 @@ class MenuDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
             while (it.moveToNext()) {
                 val name = it.getString(it.getColumnIndexOrThrow(COLUMN_NAME))
                 val price = it.getDouble(it.getColumnIndexOrThrow(COLUMN_PRICE))
-                val menuItem = MenuItem(name, price, "")
+                val menuItem = MenuItem(name, price)
                 menuItems.add(menuItem)
             }
+
         }
         db.close()
         return menuItems

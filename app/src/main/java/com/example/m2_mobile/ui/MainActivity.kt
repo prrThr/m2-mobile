@@ -22,7 +22,9 @@ class MainActivity : AppCompatActivity() {
         val menuDatabaseHelper = MenuDatabaseHelper(this)
 
         // Truncate table
-        //menuDatabaseHelper.deleteAllData()
+        menuDatabaseHelper.deleteAllData()
+
+        ///data/data/com.example.m2_mobile/image_files
 
         // Armazenar os itens do Json na variável
         val menuItemsFromJson = readMenuFromJson(this)
@@ -34,6 +36,11 @@ class MainActivity : AppCompatActivity() {
 
         // Mostrar itens armazenados no banco de dados
         val menuItems = menuDatabaseHelper.getAllMenuItems()
+
+        val menuItemsWithImages = readMenuFromJson(this).associateBy { it.name }
+        menuItems.forEach { menuItem ->
+            menuItem.image = menuItemsWithImages[menuItem.name]?.image
+        }
 
         // Configurar o RecyclerView com os itens do menu
         menuAdapter = MenuAdapter(menuItems)
