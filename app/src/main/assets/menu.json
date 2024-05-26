@@ -13,7 +13,12 @@
     {
       "name": "Sushi",
       "price": 15.0,
-      "imageUrl": "https://thumbs.dreamstime.com/b/fresh-sushi-white-background-27497610.jpg"
+      "imageUrl": "https://png.pngtree.com/thumb_back/fw800/background/20230805/pngtree-sushi-rolls-are-placed-in-a-white-bowl-on-a-white-image_12960396.jpg"
+    },
+    {
+      "name": "Macarrão",
+      "price": 5.0,
+      "imageUrl": "https://static.vecteezy.com/system/resources/previews/030/660/716/large_2x/spaghetti-with-white-background-high-quality-ultra-free-photo.jpg"
     }
   ]
 }

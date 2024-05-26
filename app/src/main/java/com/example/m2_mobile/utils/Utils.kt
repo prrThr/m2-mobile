@@ -10,8 +10,6 @@ object Utils {
         val menuItems = mutableListOf<MenuItem>()
 
         // Ler o conteúdo do arquivo JSON
-        val path = "file://${context.filesDir}/menu.json"
-        Log.d("File Path", path)
         val inputStream: InputStream = context.assets.open("menu.json")
         val jsonString = inputStream.bufferedReader().use { it.readText() }
 
