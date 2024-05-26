@@ -1,0 +1,19 @@
+{
+  "menuItems": [
+    {
+      "name": "Hambúrguer",
+      "price": 10.0,
+      "imageUrl": "https://static.vecteezy.com/system/resources/previews/000/763/553/large_2x/hamburger-isolated-on-white-background-photo.jpg"
+    },
+    {
+      "name": "Pizza",
+      "price": 12.5,
+      "imageUrl": "https://freepngimg.com/thumb/pizza/35-pizza-png-image.png"
+    },
+    {
+      "name": "Sushi",
+      "price": 15.0,
+      "imageUrl": "https://thumbs.dreamstime.com/b/fresh-sushi-white-background-27497610.jpg"
+    }
+  ]
+}
