@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.m2_mobile.data.MenuItem
+import com.example.m2_mobile.database.MenuDatabaseHelper
 import com.example.m2_mobile.databinding.ActivityMainBinding
-import android.content.res.AssetManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,10 +18,24 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Inicializar o MenuDatabaseHelper
+        val menuDatabaseHelper = MenuDatabaseHelper(this)
 
-        //val assetManager: AssetManager = assets
+        // Truncate table
+        //menuDatabaseHelper.deleteAllData()
 
-        val menuItems = readMenuFromJson(this)
+        // Armazenar os itens do Json na variável
+        val menuItemsFromJson = readMenuFromJson(this)
+
+        // Inserir cada item do menu no banco de dados
+        for (menuItem in menuItemsFromJson) {
+            menuDatabaseHelper.insertMenu(menuItem)
+        }
+
+        // Mostrar itens armazenados no banco de dados
+        val menuItems = menuDatabaseHelper.getAllMenuItems()
+
+        // Configurar o RecyclerView com os itens do menu
         menuAdapter = MenuAdapter(menuItems)
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
