@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.m2_mobile.data.MenuItem
 import com.example.m2_mobile.databinding.ItemMenuBinding
 
-class MenuAdapter(private val menuItems: List<MenuItem>) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
+class MenuAdapter(private val menuItems: List<MenuItem>, private val isOffline: Boolean) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
         val binding = ItemMenuBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -15,20 +15,16 @@ class MenuAdapter(private val menuItems: List<MenuItem>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
         val menuItem = menuItems[position]
-        holder.bind(menuItem)
+        holder.bind(menuItem, isOffline)
     }
 
     override fun getItemCount(): Int = menuItems.size
 
     inner class MenuViewHolder(private val binding: ItemMenuBinding) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(menuItem: MenuItem) {
+        fun bind(menuItem: MenuItem, isOffline: Boolean) {
             binding.itemName.text = menuItem.name
-            binding.itemPrice.text = menuItem.price.toString()
-
-            menuItem.image?.let {
-                binding.itemImage.setImageBitmap(it)
-            }
+            binding.itemPrice.text = if (isOffline) "a consultar" else menuItem.price.toString()
+            menuItem.image?.let { binding.itemImage.setImageBitmap(it) }
         }
     }
 }

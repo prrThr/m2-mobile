@@ -1,15 +1,19 @@
 package com.example.m2_mobile.ui
 
-import Utils.readMenuFromJson
+import com.example.m2_mobile.utils.Utils.readMenuFromJson
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.m2_mobile.data.MenuItem
 import com.example.m2_mobile.database.MenuDatabaseHelper
 import com.example.m2_mobile.databinding.ActivityMainBinding
+import com.example.m2_mobile.utils.NetworkUtils
+import com.example.m2_mobile.utils.Utils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var menuAdapter: MenuAdapter
 
@@ -18,35 +22,38 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Inicializar o MenuDatabaseHelper
         val menuDatabaseHelper = MenuDatabaseHelper(this)
+        val isOffline = !NetworkUtils.isOnline(this)
 
-        // Truncate table
-        menuDatabaseHelper.deleteAllData()
+        CoroutineScope(Dispatchers.Main).launch {
+            if (!isOffline) {
+                // Online mode: Fetch from JSON and save to DB
+                menuDatabaseHelper.deleteAllData()
+                val menuItemsFromJson = withContext(Dispatchers.IO) { readMenuFromJson(this@MainActivity) }
+                menuItemsFromJson.forEach { menuItem -> menuDatabaseHelper.insertMenu(menuItem) }
+            }
 
-        ///data/data/com.example.m2_mobile/image_files
+            // Fetch from database
+            val menuItems = menuDatabaseHelper.getAllMenuItems()
 
-        // Armazenar os itens do Json na variável
-        val menuItemsFromJson = readMenuFromJson(this)
+            if (isOffline) {
+                // Load images from local storage
+                menuItems.forEach { menuItem ->
+                    menuItem.image = Utils.loadImageFromLocalStorage(this@MainActivity, menuItem.name)
+                    menuItem.price = null // Display "a consultar" for price
+                }
+            } else {
+                // Fetch images
+                val menuItemsWithImages = readMenuFromJson(this@MainActivity).associateBy { it.name }
+                menuItems.forEach { menuItem -> menuItem.image = menuItemsWithImages[menuItem.name]?.image }
+            }
 
-        // Inserir cada item do menu no banco de dados
-        for (menuItem in menuItemsFromJson) {
-            menuDatabaseHelper.insertMenu(menuItem)
-        }
-
-        // Mostrar itens armazenados no banco de dados
-        val menuItems = menuDatabaseHelper.getAllMenuItems()
-
-        val menuItemsWithImages = readMenuFromJson(this).associateBy { it.name }
-        menuItems.forEach { menuItem ->
-            menuItem.image = menuItemsWithImages[menuItem.name]?.image
-        }
-
-        // Configurar o RecyclerView com os itens do menu
-        menuAdapter = MenuAdapter(menuItems)
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = menuAdapter
+            // Setup RecyclerView
+            menuAdapter = MenuAdapter(menuItems, isOffline)
+            binding.recyclerView.apply {
+                layoutManager = LinearLayoutManager(this@MainActivity)
+                adapter = menuAdapter
+            }
         }
     }
 }

@@ -17,8 +17,6 @@ class MenuDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         private const val COLUMN_PRICE = "price"
     }
 
-// ------------------------------------------------------------------------------ //
-
     override fun onCreate(db: SQLiteDatabase) {
         val createTableQuery = "CREATE TABLE $TABLE_MENU (" +
                 "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -27,13 +25,9 @@ class MenuDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.execSQL(createTableQuery)
     }
 
-// ------------------------------------------------------------------------------ //
-
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Você pode implementar a lógica de atualização do banco de dados aqui se necessário
+        // não precisa de implementação. Deixar por conta do override
     }
-
-// ------------------------------------------------------------------------------ //
 
     fun insertMenu(menuItem: MenuItem) {
         val db = writableDatabase
@@ -44,8 +38,6 @@ class MenuDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.insert(TABLE_MENU, null, values)
         db.close()
     }
-
-    // ------------------------------------------------------------------------------ //
 
     fun getAllMenuItems(): List<MenuItem> {
         val menuItems = mutableListOf<MenuItem>()
@@ -66,7 +58,6 @@ class MenuDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return menuItems
     }
 
-// ------------------------------------------------------------------------------ //
     fun deleteAllData() {
         val db = writableDatabase
         db.delete("menu", null, null)
