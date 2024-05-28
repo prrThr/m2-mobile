@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">M2-Mobile</string>
-    <string name="image_description">Descrição da Imagem</string>
+    <string name="item_image">Item Image</string>
+    <string name="item_name">Item Name</string>
+    <string name="item_price">Item Price</string>
 </resources>

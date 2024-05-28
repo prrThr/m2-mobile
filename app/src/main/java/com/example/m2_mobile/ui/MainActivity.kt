@@ -1,6 +1,5 @@
 package com.example.m2_mobile.ui
 
-import com.example.m2_mobile.utils.Utils.readMenuFromJson
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,12 +23,13 @@ class MainActivity : AppCompatActivity() {
 
         val menuDatabaseHelper = MenuDatabaseHelper(this)
         val isOffline = !NetworkUtils.isOnline(this)
+        val jsonUrl = "https://raw.githubusercontent.com/prrThr/json-m2-mobile/main/menu.json"
 
         CoroutineScope(Dispatchers.Main).launch {
             if (!isOffline) {
                 // Online mode: Fetch from JSON and save to DB
                 menuDatabaseHelper.deleteAllData()
-                val menuItemsFromJson = withContext(Dispatchers.IO) { readMenuFromJson(this@MainActivity) }
+                val menuItemsFromJson = withContext(Dispatchers.IO) { Utils.readMenuFromJson(this@MainActivity, jsonUrl) }
                 menuItemsFromJson.forEach { menuItem -> menuDatabaseHelper.insertMenu(menuItem) }
             }
 
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                 }
             } else {
                 // Fetch images
-                val menuItemsWithImages = readMenuFromJson(this@MainActivity).associateBy { it.name }
+                val menuItemsWithImages = Utils.readMenuFromJson(this@MainActivity, jsonUrl).associateBy { it.name }
                 menuItems.forEach { menuItem -> menuItem.image = menuItemsWithImages[menuItem.name]?.image }
             }
 

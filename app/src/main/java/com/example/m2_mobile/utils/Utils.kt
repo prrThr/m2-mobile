@@ -4,18 +4,17 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.example.m2_mobile.data.MenuItem
+import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
-import java.io.File
 import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 
 object Utils {
@@ -70,32 +69,51 @@ object Utils {
         }
     }
 
-    fun readMenuFromJson(context: Context): List<MenuItem> {
+    fun readMenuFromJson(context: Context, jsonUrl: String): List<MenuItem> {
         val menuItems = mutableListOf<MenuItem>()
 
         runBlocking {
-            // Ler o conteúdo do arquivo JSON
-            val inputStream: InputStream = context.assets.open("menu.json")
-            val jsonString = inputStream.bufferedReader().use { it.readText() }
+            // Fazendo solicitação HTTP para obter o JSON da web
+            val jsonString = withContext(Dispatchers.IO) {
+                try {
+                    val connection = URL(jsonUrl).openConnection() as HttpURLConnection
+                    connection.requestMethod = "GET"
+                    connection.connect()
 
-            // Analisar o conteúdo JSON
-            val jsonObject = JSONObject(jsonString)
-            val jsonArray = jsonObject.getJSONArray("menuItems")
-            println("Valor do JSON: ${jsonArray.length()}")
-
-            val deferredItems = (0 until jsonArray.length()).map { i ->
-                async {
-                    val itemObject = jsonArray.getJSONObject(i)
-                    val name = itemObject.getString("name")
-                    val price = itemObject.getDouble("price")
-                    val imageUrl = itemObject.getString("imageUrl")
-
-                    val bitmap = baixarImagem(imageUrl, context.filesDir.absolutePath + "/image_files", "$name.png")
-                    MenuItem(name, price, bitmap)
+                    if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+                        val inputStream = connection.inputStream
+                        inputStream.bufferedReader().use { it.readText() }
+                    } else {
+                        // Lidar com o código de resposta não OK, se necessário
+                        ""
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    ""
                 }
             }
-            menuItems.addAll(deferredItems.awaitAll())
+
+            // Analisar o conteúdo JSON
+            if (jsonString.isNotEmpty()) {
+                val jsonObject = JSONObject(jsonString)
+                val jsonArray = jsonObject.getJSONArray("menuItems")
+                println("Valor do JSON: ${jsonArray.length()}")
+
+                val deferredItems = (0 until jsonArray.length()).map { i ->
+                    async {
+                        val itemObject = jsonArray.getJSONObject(i)
+                        val name = itemObject.getString("name")
+                        val price = itemObject.getDouble("price")
+                        val imageUrl = itemObject.getString("imageUrl")
+
+                        val bitmap = baixarImagem(imageUrl, context.filesDir.absolutePath + "/image_files", "$name.png")
+                        MenuItem(name, price, bitmap)
+                    }
+                }
+                menuItems.addAll(deferredItems.awaitAll())
+            }
         }
         return menuItems
     }
 }
+

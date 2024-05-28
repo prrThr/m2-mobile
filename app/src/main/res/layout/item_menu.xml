@@ -1,36 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/item_image"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:id="@+id/itemImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:contentDescription="@string/item_image"
         android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/image_description" />
+        android:src="@drawable/placeholder" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginStart="16dp">
+        android:paddingStart="16dp"
+        tools:ignore="RtlSymmetry">
 
         <TextView
-            android:id="@+id/item_name"
-            android:layout_width="match_parent"
+            android:id="@+id/itemName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:text="@string/item_name"
+            android:textAppearance="?attr/textAppearanceListItem" />
 
         <TextView
-            android:id="@+id/item_price"
-            android:layout_width="match_parent"
+            android:id="@+id/itemPrice"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="16sp" />
+            android:text="@string/item_price"
+            android:textAppearance="?attr/textAppearanceListItem" />
     </LinearLayout>
 </LinearLayout>
